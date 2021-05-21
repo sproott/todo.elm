@@ -32,7 +32,7 @@ type Msg
     = AddTodo
     | ToggleTodo Int
     | WriteName String
-    | ToggleHideCompleted Bool
+    | ToggleHideCompleted
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -52,8 +52,8 @@ update msg model =
         WriteName newTodoName ->
             ( { model | newTodoName = newTodoName }, Cmd.none )
 
-        ToggleHideCompleted newValue ->
-            ( { model | hideCompleted = newValue }, Cmd.none )
+        ToggleHideCompleted ->
+            ( { model | hideCompleted = not model.hideCompleted }, Cmd.none )
 
 
 toggleTodo : Int -> Todo -> Todo
@@ -78,7 +78,7 @@ view model =
             ]
          , label [ css [ property "user-select" "none" ] ]
             [ text "Hide completed"
-            , input [ type_ "checkbox", onCheck ToggleHideCompleted ] []
+            , input [ type_ "checkbox", onCheck (always ToggleHideCompleted) ] []
             ]
          ]
             ++ drawTodos model.hideCompleted model.todos
