@@ -3,8 +3,8 @@ module Main exposing (..)
 import Browser
 import Css exposing (..)
 import Html.Styled exposing (..)
-import Html.Styled.Attributes exposing (css, placeholder, src, type_, value)
-import Html.Styled.Events exposing (onCheck, onClick, onInput, onSubmit)
+import Html.Styled.Attributes as A
+import Html.Styled.Events as E
 
 
 
@@ -71,14 +71,14 @@ toggleTodo id todo =
 
 view : Model -> Html Msg
 view model =
-    div [ css [ displayFlex, flexDirection column, alignItems center, margin (rem 2), property "gap" "0.5rem" ] ]
-        ([ form [ onSubmit AddTodo, css [ displayFlex, flexDirection column, alignItems center, property "gap" "0.5rem" ] ]
-            [ input [ placeholder "New Todo Name", value model.newTodoName, onInput WriteName ] []
+    div [ A.css [ displayFlex, flexDirection column, alignItems center, margin (rem 2), property "gap" "0.5rem" ] ]
+        ([ form [ E.onSubmit AddTodo, A.css [ displayFlex, flexDirection column, alignItems center, property "gap" "0.5rem" ] ]
+            [ input [ A.placeholder "New Todo Name", A.value model.newTodoName, E.onInput WriteName ] []
             , button [] [ text "Add Todo" ]
             ]
-         , label [ css [ property "user-select" "none" ] ]
+         , label [ A.css [ property "user-select" "none" ] ]
             [ text "Hide completed"
-            , input [ type_ "checkbox", onCheck (always ToggleHideCompleted) ] []
+            , input [ A.type_ "checkbox", E.onCheck (always ToggleHideCompleted) ] []
             ]
          ]
             ++ drawTodos model.hideCompleted model.todos
@@ -89,12 +89,11 @@ drawTodos : Bool -> List Todo -> List (Html Msg)
 drawTodos hideCompleted todos =
     let
         filteredTodos =
-            case hideCompleted of
-                True ->
-                    List.filter (\todo -> not todo.completed) todos
+            if hideCompleted then
+                List.filter (\todo -> not todo.completed) todos
 
-                False ->
-                    todos
+            else
+                todos
     in
     List.map drawTodo filteredTodos
 
@@ -102,11 +101,11 @@ drawTodos hideCompleted todos =
 drawTodo : Todo -> Html Msg
 drawTodo { id, name, completed } =
     div
-        [ css
+        [ A.css
             [ width (px 200), displayFlex, justifyContent spaceBetween ]
         ]
         [ div [] [ text name ]
-        , div [ onClick (ToggleTodo id), css [ cursor pointer, property "user-select" "none" ] ]
+        , div [ E.onClick (ToggleTodo id), A.css [ cursor pointer, property "user-select" "none" ] ]
             [ text
                 (if completed then
                     "✔️"
